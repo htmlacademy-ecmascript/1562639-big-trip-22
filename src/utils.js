@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {MINUTES_IN_HOURS, MINUTES_IN_DAYS, DateFormat} from './const.js';
+import {DateFormat} from './const.js';
 
 
 const getRandomNumber = (number) => {
@@ -24,12 +24,14 @@ function humanizePointTime(time) {
 }
 
 function humanizePointDuration (start, end) {
-  const diff = dayjs(end).diff(start, 'minute');
-  let days;
-  let hours;
-  let minutes;
+  const diffDate = new Date(new Date(end) - new Date(start));
+
+  const days = diffDate.getDate();
+  const hours = diffDate.getUTCHours();
+  const minutes = diffDate.getMinutes();
+
   function formatDays() {
-    return (days && days < 10) ? `0${days}` : days;
+    return (days < 10) ? `0${days - 1}` : days - 1;
   }
   function formatHours() {
     return (hours && hours < 10 || hours === 0) ? `0${hours}` : hours;
@@ -38,27 +40,13 @@ function humanizePointDuration (start, end) {
     return (minutes && minutes < 10 || minutes === 0) ? `0${minutes}` : minutes;
   }
 
-  if (diff > (MINUTES_IN_DAYS)) {
-    days = Math.floor(diff / MINUTES_IN_DAYS);
-    hours = Math.floor((diff % MINUTES_IN_DAYS / MINUTES_IN_HOURS));
-    minutes = (diff % MINUTES_IN_DAYS % MINUTES_IN_HOURS);
-    return `${formatDays()}D ${formatHours()}H ${formatMinutes()}M`;
-  } else if (diff > MINUTES_IN_HOURS) {
-    hours = Math.floor(diff / MINUTES_IN_HOURS);
-    minutes = diff % MINUTES_IN_HOURS;
+  if (diffDate.getDate() <= 1 && diffDate.getUTCHours() !== 0) {
     return `${formatHours()}H ${formatMinutes()}M`;
-  } else if (diff < MINUTES_IN_HOURS) {
-    minutes = diff;
+  } else if (diffDate.getDate() <= 1 && diffDate.getUTCHours() === 0) {
     return `${formatMinutes()}M`;
+  } else if (diffDate.getDate() > 1) {
+    return `${formatDays()}D ${formatHours()}H ${formatMinutes()}M`;
   }
-  // switch (diff) {
-  //   case diff < MINUTES_IN_HOURS:
-  //     return dayjs(diff).format(DateFormat.DURATION_MINUTES);
-  //   case diff > MINUTES_IN_HOURS && diff < MINUTES_IN_HOURS * HOURS_IN_DAY:
-  //     return dayjs(diff).format(DateFormat.DURATION_HOURS_MINUTES);
-  //   default:
-  //     return dayjs(diff).format(DateFormat.DURATION_DAYS_HOURS_MINUTES);
-  // }
 }
 
 export {getRandomNumber, getRandomArrayElement, humanizePointDate, humanizePointTime, humanizePointDuration, humanizeAddPointDate};

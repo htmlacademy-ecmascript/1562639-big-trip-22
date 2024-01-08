@@ -1,6 +1,5 @@
 import { getRandomNumber, getRandomArrayElement } from '../utils';
 import { TYPE_POINT } from '../const';
-// import { mockDestination } from './destination';
 
 const mockPoint = [
   {
