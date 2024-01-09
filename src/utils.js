@@ -26,26 +26,20 @@ function humanizePointTime(time) {
 function humanizePointDuration (start, end) {
   const diffDate = new Date(new Date(end) - new Date(start));
 
-  const days = diffDate.getDate();
+  const days = diffDate.getDate() - 1;
   const hours = diffDate.getUTCHours();
   const minutes = diffDate.getMinutes();
 
-  function formatDays() {
-    return (days < 10) ? `0${days - 1}` : days - 1;
-  }
-  function formatHours() {
-    return (hours && hours < 10 || hours === 0) ? `0${hours}` : hours;
-  }
-  function formatMinutes() {
-    return (minutes && minutes < 10 || minutes === 0) ? `0${minutes}` : minutes;
+  function formatDate(arg) {
+    return (arg < 10 || arg === 0) ? `0${arg}` : arg;
   }
 
   if (diffDate.getDate() <= 1 && diffDate.getUTCHours() !== 0) {
-    return `${formatHours()}H ${formatMinutes()}M`;
+    return `${formatDate(hours)}H ${formatDate(minutes)}M`;
   } else if (diffDate.getDate() <= 1 && diffDate.getUTCHours() === 0) {
-    return `${formatMinutes()}M`;
+    return `${formatDate(minutes)}M`;
   } else if (diffDate.getDate() > 1) {
-    return `${formatDays()}D ${formatHours()}H ${formatMinutes()}M`;
+    return `${formatDate(days)}D ${formatDate(hours)}H ${formatDate(minutes)}M`;
   }
 }
 
