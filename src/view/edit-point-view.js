@@ -1,6 +1,6 @@
-import { createElement } from '../render.js';
 import { TYPE_POINT } from '../const.js';
 import { humanizeAddPointDate } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 const formatOfferTitle = (title) => title.split(' '). join('_');
 
@@ -111,26 +111,15 @@ function createEditPointTemplate(point, destinations, offers) {
       </li>`;
 }
 
-export default class EditPointView {
+export default class EditPointView extends AbstractView {
   constructor({point, destinations, offers}) {
+    super();
     this.point = point;
     this.destinations = destinations;
     this.offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createEditPointTemplate(this.point, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
