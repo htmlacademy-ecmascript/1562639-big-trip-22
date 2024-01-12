@@ -6,26 +6,33 @@ import {render} from '../framework/render.js';
 import { getDefaultPoint } from '../const.js';
 
 export default class BoardPresenter {
-  pointListComponent = new PointsListView();
+  #boardContainer = null;
+  #pointsModel = null;
+
+  #pointListComponent = new PointsListView();
+
+  #boardPoints = [];
+  #destinations = null;
+  #offers = null;
 
   constructor({boardContainer, pointsModel}) {
-    this.boardContainer = boardContainer;
-    this.pointsModel = pointsModel;
+    this.#boardContainer = boardContainer;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.boardPoints = [...this.pointsModel.getPoints()];
+    this.#boardPoints = [...this.#pointsModel.points];
 
-    const destinations = this.pointsModel.getDestinations();
-    const offers = this.pointsModel.getOffers();
+    this.#destinations = this.#pointsModel.destinations;
+    this.#offers = this.#pointsModel.offers;
 
-    render(new SortingView(), this.boardContainer);
-    render(this.pointListComponent, this.boardContainer);
-    render(new EditPointView({point: getDefaultPoint(), destinations: destinations, offers: offers}), this.pointListComponent.element);
-    render(new EditPointView({point: this.boardPoints[0], destinations: destinations, offers: offers}), this.pointListComponent.element);
+    render(new SortingView(), this.#boardContainer);
+    render(this.#pointListComponent, this.#boardContainer);
+    render(new EditPointView({point: getDefaultPoint(), destinations: this.#destinations, offers: this.#offers}), this.#pointListComponent.element);
+    render(new EditPointView({point: this.#boardPoints[0], destinations: this.#destinations, offers: this.#offers}), this.#pointListComponent.element);
 
-    for (let i = 1; i < this.boardPoints.length; i++) {
-      render(new PointView({point: this.boardPoints[i], destinations: destinations, offers: offers}), this.pointListComponent.element);
+    for (let i = 1; i < this.#boardPoints.length; i++) {
+      render(new PointView({point: this.#boardPoints[i], destinations: this.#destinations, offers: this.#offers}), this.#pointListComponent.element);
     }
   }
 }
