@@ -1,7 +1,8 @@
 import PointsListView from '../view/points-list-view.js';
 import PointView from '../view/point-view.js';
 import SortingView from '../view/sorting-view';
-import {render} from '../framework/render.js';
+import {render, replace} from '../framework/render.js';
+import EditPointView from '../view/edit-point-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -20,6 +21,54 @@ export default class BoardPresenter {
 
   init() {
     this.#boardPoints = [...this.#pointsModel.points];
+    this.#destinations = this.#pointsModel.destinations;
+    this.#offers = this.#pointsModel.offers;
+
+    this.#renderBoard();
+  }
+
+  #renderPoints(point, destinations, offers) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const pointComponent = new PointView({
+      point,
+      destinations,
+      offers,
+      onEditClick: () => {
+        replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      },
+    });
+
+    const pointEditComponent = new EditPointView({
+      point,
+      destinations,
+      offers,
+      onFormSubmit: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+    });
+
+    function replacePointToForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceFormToPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
+    render (pointComponent, this.#pointListComponent.element);
+  }
+
+  #renderBoard() {
+    this.#boardPoints = [...this.#pointsModel.points];
 
     this.#destinations = this.#pointsModel.destinations;
     this.#offers = this.#pointsModel.offers;
@@ -30,11 +79,5 @@ export default class BoardPresenter {
     for (let i = 0; i < this.#boardPoints.length; i++) {
       this.#renderPoints(this.#boardPoints[i], this.#destinations, this.#offers);
     }
-  }
-
-  #renderPoints(point, destinations, offers) {
-    const pointComponent = new PointView({point, destinations, offers});
-
-    render (pointComponent, this.#pointListComponent.element);
   }
 }
