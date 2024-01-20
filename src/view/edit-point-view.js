@@ -1,5 +1,5 @@
 import { TYPE_POINT } from '../const.js';
-import { humanizeAddPointDate } from '../utils.js';
+import { humanizeAddPointDate } from '../utils/point.js';
 import AbstractView from '../framework/view/abstract-view.js';
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 const formatOfferTitle = (title) => title.split(' '). join('_');

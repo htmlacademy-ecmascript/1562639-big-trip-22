@@ -1,5 +1,5 @@
 // import { DESCRIPTION } from '../const';
-import { getRandomNumber} from '../utils';
+import { getRandomNumber} from '../utils/utils';
 
 const mockDestinations = [
   {

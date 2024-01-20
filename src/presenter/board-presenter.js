@@ -3,12 +3,19 @@ import PointView from '../view/point-view.js';
 import SortingView from '../view/sorting-view';
 import {render, replace} from '../framework/render.js';
 import EditPointView from '../view/edit-point-view.js';
+// import FilterView from '../view/filter-view.js';
+// import NewEventButtonView from '../view/new-event-button-view.js';
+import NoEventView from '../view/no-event-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
+  // #headerContainer = null;
   #pointsModel = null;
 
   #pointListComponent = new PointsListView();
+  // #filters = new FilterView();
+  // #newEventButton = new NewEventButtonView();
+  #sorting = new SortingView();
 
   #boardPoints = [];
   #destinations = null;
@@ -67,13 +74,30 @@ export default class BoardPresenter {
     render (pointComponent, this.#pointListComponent.element);
   }
 
+  // #renderBoard() {
+  //   this.#boardPoints = [...this.#pointsModel.points];
+
+  //   this.#destinations = this.#pointsModel.destinations;
+  //   this.#offers = this.#pointsModel.offers;
+
+  //   render(new SortingView(), this.#boardContainer);
+  //   render(this.#pointListComponent, this.#boardContainer);
+
+  //   for (let i = 0; i < this.#boardPoints.length; i++) {
+  //     this.#renderPoints(this.#boardPoints[i], this.#destinations, this.#offers);
+  //   }
+  // }
+
   #renderBoard() {
-    this.#boardPoints = [...this.#pointsModel.points];
+    // render(this.#filters, this.#headerContainer);
+    // render(this.#newEventButton, this.#headerContainer, RenderPosition.AFTEREND);
 
-    this.#destinations = this.#pointsModel.destinations;
-    this.#offers = this.#pointsModel.offers;
+    if (this.#boardPoints.length === 0) {
+      render(new NoEventView(), this.#boardContainer);
+      return;
+    }
 
-    render(new SortingView(), this.#boardContainer);
+    render(this.#sorting, this.#boardContainer);
     render(this.#pointListComponent, this.#boardContainer);
 
     for (let i = 0; i < this.#boardPoints.length; i++) {

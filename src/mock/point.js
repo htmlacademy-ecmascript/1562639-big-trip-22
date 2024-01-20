@@ -1,12 +1,12 @@
-import { getRandomNumber, getRandomArrayElement } from '../utils';
+import { getRandomNumber, getRandomArrayElement } from '../utils/utils';
 import { TYPE_POINT } from '../const';
 
 const mockPoint = [
   {
     id: '1',
     basePrice: getRandomNumber(10000),
-    dateFrom: '2019-07-10T12:55:56.845Z',
-    dateTo: '2019-07-11T13:22:13.375Z',
+    dateFrom: '2024-07-10T12:55:56.845Z',
+    dateTo: '2024-07-11T13:22:13.375Z',
     destination: '1',
     isFavorite: false,
     offers: [
