@@ -1,4 +1,4 @@
-import { humanizePointDate, humanizePointTime, humanizePointDuration} from '../utils.js';
+import { humanizePointDate, humanizePointTime, humanizePointDuration} from '../utils/point.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createOffersTemplate({title, price}) {
