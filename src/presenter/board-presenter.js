@@ -15,7 +15,8 @@ export default class BoardPresenter {
   #pointListComponent = new PointsListView();
   // #filters = new FilterView();
   // #newEventButton = new NewEventButtonView();
-  #sorting = new SortingView();
+  #sortComponent = new SortingView();
+  #noEventComponent = new NoEventView();
 
   #boardPoints = [];
   #destinations = null;
@@ -61,6 +62,10 @@ export default class BoardPresenter {
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
+      onCloseEditClick: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
     });
 
     function replacePointToForm() {
@@ -74,34 +79,31 @@ export default class BoardPresenter {
     render (pointComponent, this.#pointListComponent.element);
   }
 
-  // #renderBoard() {
-  //   this.#boardPoints = [...this.#pointsModel.points];
+  #renderSort() {
+    render(this.#sortComponent, this.#boardContainer);
+  }
 
-  //   this.#destinations = this.#pointsModel.destinations;
-  //   this.#offers = this.#pointsModel.offers;
-
-  //   render(new SortingView(), this.#boardContainer);
-  //   render(this.#pointListComponent, this.#boardContainer);
-
-  //   for (let i = 0; i < this.#boardPoints.length; i++) {
-  //     this.#renderPoints(this.#boardPoints[i], this.#destinations, this.#offers);
-  //   }
-  // }
-
-  #renderBoard() {
-    // render(this.#filters, this.#headerContainer);
-    // render(this.#newEventButton, this.#headerContainer, RenderPosition.AFTEREND);
-
+  #renderNoPoints() {
     if (this.#boardPoints.length === 0) {
-      render(new NoEventView(), this.#boardContainer);
-      return;
+      render(this.#noEventComponent, this.#boardContainer);
     }
+  }
 
-    render(this.#sorting, this.#boardContainer);
+  #renderPointsList() {
     render(this.#pointListComponent, this.#boardContainer);
 
     for (let i = 0; i < this.#boardPoints.length; i++) {
       this.#renderPoints(this.#boardPoints[i], this.#destinations, this.#offers);
     }
+  }
+
+  #renderBoard() {
+    // render(this.#filters, this.#headerContainer);
+    // render(this.#newEventButton, this.#headerContainer, RenderPosition.AFTEREND);
+
+    this.#renderNoPoints();
+    this.#renderSort();
+
+    this.#renderPointsList();
   }
 }
