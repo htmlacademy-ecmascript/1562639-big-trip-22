@@ -10,6 +10,10 @@ function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
 const filter = {
   [FilterType.EVERYTHING]: (points) => points,
   [FilterType.PAST]: (points) => points.filter((point) => dayjs().isAfter(point.dateFrom)),
@@ -17,6 +21,4 @@ const filter = {
   [FilterType.FUTURE]: (points) => points.filter((point) => dayjs().isBefore(point.dateFrom)),
 };
 
-export {filter};
-
-export {getRandomNumber, getRandomArrayElement};
+export {getRandomNumber, getRandomArrayElement,updateItem, filter};
