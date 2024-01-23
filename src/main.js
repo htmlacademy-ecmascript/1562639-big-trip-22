@@ -15,7 +15,6 @@ const pointsModel = new PointsModel();
 
 const boardPresenter = new BoardPresenter({
   boardContainer: siteTripEventsElement,
-  // headerContainer: siteHeaderContainer,
   pointsModel,
 });
 
