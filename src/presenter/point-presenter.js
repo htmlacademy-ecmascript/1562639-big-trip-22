@@ -4,6 +4,7 @@ import EditPointView from '../view/edit-point-view.js';
 
 export default class PointPresenter {
   #pointListContainer = null;
+  #handleDataChange = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
@@ -12,14 +13,15 @@ export default class PointPresenter {
   #destinations = null;
   #offers = null;
 
-  constructor({pointListContainer}) {
-    this.#pointListContainer = pointListContainer;
-  }
-
-  init(point, destinations, offers) {
-    this.#point = point;
+  constructor({destinations, offers, pointListContainer, onDataChange}) {
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#pointListContainer = pointListContainer;
+    this.#handleDataChange = onDataChange;
+  }
+
+  init(point) {
+    this.#point = point;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
@@ -29,6 +31,7 @@ export default class PointPresenter {
       destinations: this.#destinations,
       offers: this.#offers,
       onEditClick: this.#handleOpenEditClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#pointEditComponent = new EditPointView({
@@ -88,7 +91,11 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #handleFormSubmit = () => {
-    this.#replaceFormToPoint();
+  #handleFavoriteClick = () => {
+    this.#handleDataChange ({ ...this.#point, isFavorite: !this.#point.isFavorite });
+  };
+
+  #handleFormSubmit = (point) => {
+    this.#replaceFormToPoint(point);
   };
 }

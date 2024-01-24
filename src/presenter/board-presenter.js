@@ -1,6 +1,6 @@
 import PointsListView from '../view/points-list-view.js';
 import SortingView from '../view/sorting-view';
-import {render} from '../framework/render.js';
+import {RenderPosition, render} from '../framework/render.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/utils.js';
@@ -32,12 +32,15 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
-  #renderPoints(point, destinations, offers) {
+  #renderPoints(point) {
     const pointPresenter = new PointPresenter({
-      pointListContainer: this.#pointListComponent.element
+      destinations: this.#destinations,
+      offers: this.#offers,
+      pointListContainer: this.#pointListComponent.element,
+      onDataChange: this.#handlePointChange
     });
 
-    pointPresenter.init(point, destinations, offers);
+    pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
@@ -52,7 +55,7 @@ export default class BoardPresenter {
 
   #renderNoPoints() {
     if (this.#boardPoints.length === 0) {
-      render(this.#noEventComponent, this.#boardContainer);
+      render(this.#noEventComponent, this.#boardContainer, RenderPosition.AFTEREND);
     }
   }
 
