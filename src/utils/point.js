@@ -33,4 +33,37 @@ function humanizePointDuration (start, end) {
   }
 }
 
-export {humanizePointDate, humanizePointTime, humanizePointDuration, humanizeAddPointDate};
+function sortPointByDay(pointA, pointB) {
+  if ((pointA.dateFrom) > (pointB.dateFrom)) {
+    return 1;
+  }
+  if ((pointA.dateFrom) < (pointB.dateFrom)) {
+    return -1;
+  }
+  return 0;
+}
+
+function sortPointByDuration(pointA, pointB) {
+  const diffDateA = new Date(new Date(pointA.dateTo) - new Date(pointA.dateFrom));
+  const diffDateB = new Date(new Date(pointB.dateTo) - new Date(pointB.dateFrom));
+  if (diffDateA < diffDateB) {
+    return 1;
+  }
+  if (diffDateA > diffDateB) {
+    return -1;
+  }
+  return 0;
+}
+
+function sortPointByPrice(pointA, pointB) {
+  if (Number(pointA.basePrice) < Number(pointB.basePrice)) {
+    return 1;
+  }
+  if (Number(pointA.basePrice) > Number(pointB.basePrice)) {
+    return -1;
+  }
+  return 0;
+}
+
+
+export {humanizePointDate, humanizePointTime, humanizePointDuration, humanizeAddPointDate, sortPointByDay, sortPointByDuration, sortPointByPrice};
