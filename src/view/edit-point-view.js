@@ -65,8 +65,8 @@ function createEditPointTemplate(point, destinations, offers) {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
-            ${point.id ? (
+            <button class="event__reset-btn" type="reset">${pointId ? 'Delete' : 'Cancel'}</button>
+            ${pointId ? (
     `<button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>
               </button>`
@@ -125,7 +125,7 @@ export default class EditPointView extends AbstractView {
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseEditClick = onCloseEditClick;
-
+    console.log(this.#point);
 
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
