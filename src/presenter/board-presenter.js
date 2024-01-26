@@ -77,7 +77,9 @@ export default class BoardPresenter {
 
     this.#sortPoints(sortType);
     // - Очищаем список
+    this.#clearPointList();
     // - Рендерим список заново
+    this.#renderPointsList();
   };
 
   #renderPoints(point) {
