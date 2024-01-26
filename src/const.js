@@ -32,4 +32,11 @@ const FilterType = {
   FUTURE: 'future',
 };
 
-export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType};
+const SortType = {
+  DAY: 'day',
+  PRICE: 'price',
+  TIME: 'time',
+};
+
+
+export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType, SortType};
