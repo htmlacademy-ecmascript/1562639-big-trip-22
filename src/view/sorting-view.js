@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { SortType} from '../const.js';
-// import { generateSorting } from '../mock/sorting.js';
 
 function createSortingTemplate() {
 
@@ -33,32 +32,26 @@ function createSortingTemplate() {
 </form>) `;
 }
 
-//Придумать как добавить checked
-
-
-
 export default class SortingView extends AbstractView {
-  // #handleSortTypeChange = null;
-  // #sorting = null;
+  #handleSortTypeChange = null;
 
-  // constructor({onSortTypeChange, sorting}) {
-  //   super();
-  //   this.#handleSortTypeChange = onSortTypeChange;
-  //   this.#sorting = sorting;
+  constructor({onSortTypeChange}) {
+    super();
+    this.#handleSortTypeChange = onSortTypeChange;
 
-  //   this.element.addEventListener('click', this.#sortTypeChangeHandler);
-  // }
+    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+  }
 
   get template() {
     return createSortingTemplate();
   }
 
-  // #sortTypeChangeHandler = (evt) => {
-  //   if (evt.target.tagName !== 'INPUT') {
-  //     return;
-  //   }
+  #sortTypeChangeHandler = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
 
-  //   evt.preventDefault();
-  //   this.#handleSortTypeChange(evt.target.dataset.sortType);
-  // };
+    evt.preventDefault();
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }

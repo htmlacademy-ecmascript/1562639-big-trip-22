@@ -10,7 +10,7 @@ export default class BoardPresenter {
   #pointsModel = null;
 
   #pointListComponent = new PointsListView();
-  #sortComponent = new SortingView();
+  #sortComponent = null;
   #noEventComponent = new NoEventView();
 
   #boardPoints = [];
@@ -41,6 +41,12 @@ export default class BoardPresenter {
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+  }
+
   #renderPoints(point) {
     const pointPresenter = new PointPresenter({
       destinations: this.#destinations,
@@ -55,6 +61,9 @@ export default class BoardPresenter {
   }
 
   #renderSort() {
+    this.#sortComponent = new SortingView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortComponent, this.#boardContainer);
   }
 
