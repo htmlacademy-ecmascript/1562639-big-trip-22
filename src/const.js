@@ -32,6 +32,8 @@ const FilterType = {
   FUTURE: 'future',
 };
 
+const SORTING = ['day', 'event', 'time', 'price', 'offers'];
+
 const SortType = {
   DAY: 'day',
   PRICE: 'price',
@@ -39,4 +41,4 @@ const SortType = {
 };
 
 
-export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType, SortType};
+export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType, SORTING, SortType};
