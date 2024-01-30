@@ -1,37 +1,50 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import { SortType} from '../const.js';
 
-function createSortingTemplate() {
+function createSortingTemplate(sorting, currentSort) {
+  const sortType = Object.values(SortType);
   return `
   (<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-  <div class="trip-sort__item  trip-sort__item--day">
-    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
-    <label class="trip-sort__btn" for="sort-day">Day</label>
-  </div>
-
-  <div class="trip-sort__item  trip-sort__item--event">
-    <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-    <label class="trip-sort__btn" for="sort-event">Event</label>
-  </div>
-
-  <div class="trip-sort__item  trip-sort__item--time">
-    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
-    <label class="trip-sort__btn" for="sort-time">Time</label>
-  </div>
-
-  <div class="trip-sort__item  trip-sort__item--price">
-    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price">
-    <label class="trip-sort__btn" for="sort-price">Price</label>
-  </div>
-
-  <div class="trip-sort__item  trip-sort__item--offer">
-    <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-    <label class="trip-sort__btn" for="sort-offer">Offers</label>
-  </div>
-</form>) `;
+  ${sorting.map((item) => `<div class="trip-sort__item  trip-sort__item--${item.value}">
+      <input
+        id="sort-${item.value}"
+        class="trip-sort__input  visually-hidden"
+        type="radio"
+        name="trip-sort"
+        value="sort-${item.value}"
+        ${sortType.includes(item.value) ? `data-sort-type="${item.value}"` : ''}
+        ${item.value === currentSort ? 'checked' : ''}
+        ${item.isDisabled ? 'disabled' : ''}
+        >
+      <label class="trip-sort__btn" for="sort-${item.value}">${item.value}</label>
+    </div>`)}
+  </form>) `;
 }
 
 export default class SortingView extends AbstractView {
-  get template() {
-    return createSortingTemplate();
+  #handleSortTypeChange = null;
+  #sorting = null;
+  #currentSort = null;
+
+  constructor({onSortTypeChange, sorting, currentSort}) {
+    super();
+    this.#handleSortTypeChange = onSortTypeChange;
+    this.#sorting = sorting;
+    this.#currentSort = currentSort;
+
+    this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
+
+  get template() {
+    return createSortingTemplate(this.#sorting, this.#currentSort);
+  }
+
+  #sortTypeChangeHandler = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+
+    evt.preventDefault();
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }

@@ -65,8 +65,8 @@ function createEditPointTemplate(point, destinations, offers) {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
-            ${point.id ? (
+            <button class="event__reset-btn" type="reset">${pointId ? 'Delete' : 'Cancel'}</button>
+            ${pointId ? (
     `<button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>
               </button>`
