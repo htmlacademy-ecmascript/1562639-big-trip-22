@@ -59,7 +59,6 @@ export default class BoardPresenter {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
     this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
-    console.log(updatedPoint);
   };
 
   #sortPoints(sortType) {
