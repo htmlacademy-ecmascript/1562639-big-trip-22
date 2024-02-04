@@ -10,10 +10,6 @@ const mockPoint = [
     destination: '1',
     isFavorite: false,
     offers: [
-      '1',
-      '2',
-      '8',
-      '11'
     ],
     type: getRandomArrayElement(TYPE_POINT)
   },
@@ -25,9 +21,6 @@ const mockPoint = [
     destination: '2',
     isFavorite: false,
     offers: [
-      '2',
-      '4',
-      '5'
     ],
     type: getRandomArrayElement(TYPE_POINT)
   },
@@ -50,7 +43,7 @@ const mockPoint = [
     destination: '4',
     isFavorite: true,
     offers: [
-      '3'
+
     ],
     type: getRandomArrayElement(TYPE_POINT)
   }
