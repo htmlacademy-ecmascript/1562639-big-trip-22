@@ -1,4 +1,4 @@
-import PointsModel from './model/model';
+import PointsModel from './model/points-model';
 import BoardPresenter from './presenter/board-presenter';
 
 const siteHeaderElement = document.querySelector('.page-header');
