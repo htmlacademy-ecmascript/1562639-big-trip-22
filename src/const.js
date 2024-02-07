@@ -40,5 +40,17 @@ const SortType = {
   TIME: 'time',
 };
 
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_TASK',
+  ADD_TASK: 'ADD_TASK',
+  DELETE_TASK: 'DELETE_TASK',
+};
 
-export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType, SORTING, SortType};
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+
+export {TYPE_POINT, DESCRIPTION, POINT_COUNT, DateFormat, getDefaultPoint, TextNoEvent, FilterType, SORTING, SortType, UserAction, UpdateType};

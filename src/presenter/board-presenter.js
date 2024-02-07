@@ -34,6 +34,7 @@ export default class BoardPresenter {
     this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -57,8 +58,20 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handlePointChange = (updatedPoint) => {
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялась стоимость)
+    // - обновить список (например, когда точка удалена или добавлена новая)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -78,7 +91,7 @@ export default class BoardPresenter {
       destinations: this.#destinations,
       offers: this.#offers,
       pointListContainer: this.#pointListComponent.element,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
 
