@@ -1,6 +1,5 @@
 import PointsListView from '../view/points-list-view.js';
 import SortingView from '../view/sorting-view';
-import FilterView from '../view/filter-view.js';
 import {RenderPosition, render, remove} from '../framework/render.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
@@ -9,17 +8,16 @@ import {sortPointByDay, sortPointByDuration, sortPointByPrice} from '../utils/po
 import {generateSorting} from '../mock/sorting.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 import AddNewPointView from '../view/add-new-point-view.js';
-import FilterModel from '../model/filter-model';
+import FilterPresenter from '../presenter/filter-presenter.js';
 
 export default class BoardPresenter {
   #headerContainer = null;
   #boardContainer = null;
   #pointsModel = null;
-  #filterModel = new FilterModel();
+  #filterModel = null;
 
   #pointListComponent = new PointsListView();
   #sortComponent = null;
-  #filterComponent = null;
   #noEventComponent = new NoEventView();
   #newEventComponent = new AddNewPointView();
 
@@ -30,13 +28,6 @@ export default class BoardPresenter {
 
   #currentSortType = SortType.DAY;
   #sortingState = generateSorting(this.#currentSortType);
-
-  #filters = [
-    {
-      type: 'everything',
-      count: 0,
-    },
-  ];
 
   constructor({headerContainer, boardContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
@@ -166,14 +157,16 @@ export default class BoardPresenter {
   }
 
   #renderFilter() {
-    this.#filterComponent = new FilterView({
-      filters: this.#filters,
-      currentFilterType: 'everything',
-      onFilterTypeChange: () => {}
+    const filterPresenter = new FilterPresenter({
+      filterContainer: this.#headerContainer,
+      filterModel: this.#filterModel,
+      pointsModel: this.#pointsModel,
     });
-    render(this.#filterComponent, this.#headerContainer);
-    render(new NewEventButtonView({onClick: this.#handleNewEventClick}), this.#headerContainer, RenderPosition.AFTEREND);
+    filterPresenter.init();
+  }
 
+  #renderNewEventButton() {
+    render(new NewEventButtonView({onClick: this.#handleNewEventClick}), this.#headerContainer, RenderPosition.AFTEREND);
   }
 
   #handleNewEventClick = () => {
@@ -183,6 +176,7 @@ export default class BoardPresenter {
   #renderBoard() {
     this.#renderSort();
     this.#renderFilter();
+    this.#renderNewEventButton();
     this.#renderPointsList();
     if (this.#pointsModel.points.length === 0) {
       this.#renderNoPoints();
