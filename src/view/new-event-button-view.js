@@ -6,20 +6,20 @@ function createNewEventButton() {
 }
 
 export default class NewEventButtonView extends AbstractView {
-  // #handleClick = null;
+  #handleClick = null;
 
-  // constructor({onClick}) {
-  //   super();
-  //   this.#handleClick = onClick;
-  //   this.element.addEventListener('click', this.#clickHandler);
-  // }
+  constructor({onClick}) {
+    super();
+    this.#handleClick = onClick;
+    this.element.addEventListener('click', this.#clickHandler);
+  }
 
   get template() {
     return createNewEventButton();
   }
 
-  // #clickHandler = (evt) => {
-  //   evt.preventDefault();
-  //   this.#handleClick();
-  // };
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }

@@ -9,6 +9,7 @@ import {sortPointByDay, sortPointByDuration, sortPointByPrice} from '../utils/po
 import {generateSorting} from '../mock/sorting.js';
 import { generateFilter } from '../mock/filter.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
+import AddNewPointView from '../view/add-new-point-view.js';
 
 export default class BoardPresenter {
   #headerContainer = null;
@@ -19,6 +20,7 @@ export default class BoardPresenter {
   #sortComponent = null;
   #filterComponent = null;
   #noEventComponent = new NoEventView();
+  #newEventComponent = new AddNewPointView();
 
   #destinations = null;
   #offers = null;
@@ -160,9 +162,13 @@ export default class BoardPresenter {
   #renderFilter() {
     this.#filterComponent = new FilterView({filters: this.#filters});
     render(this.#filterComponent, this.#headerContainer);
-    render(new NewEventButtonView(), this.#headerContainer, RenderPosition.AFTEREND);
+    render(new NewEventButtonView({onClick: this.#handleNewEventClick}), this.#headerContainer, RenderPosition.AFTEREND);
 
   }
+
+  #handleNewEventClick = () => {
+    render(this.#newEventComponent, this.#pointListComponent.element, RenderPosition.AFTERBEGIN);
+  };
 
   #renderBoard() {
     this.#renderSort();
@@ -173,3 +179,4 @@ export default class BoardPresenter {
     }
   }
 }
+
