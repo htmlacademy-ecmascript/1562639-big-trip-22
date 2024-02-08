@@ -7,14 +7,15 @@ import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import {sortPointByDay, sortPointByDuration, sortPointByPrice} from '../utils/point.js';
 import {generateSorting} from '../mock/sorting.js';
-import { generateFilter } from '../mock/filter.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 import AddNewPointView from '../view/add-new-point-view.js';
+import FilterModel from '../model/filter-model';
 
 export default class BoardPresenter {
   #headerContainer = null;
   #boardContainer = null;
   #pointsModel = null;
+  #filterModel = new FilterModel();
 
   #pointListComponent = new PointsListView();
   #sortComponent = null;
@@ -30,12 +31,18 @@ export default class BoardPresenter {
   #currentSortType = SortType.DAY;
   #sortingState = generateSorting(this.#currentSortType);
 
-  #filters = null;
+  #filters = [
+    {
+      type: 'everything',
+      count: 0,
+    },
+  ];
 
-  constructor({headerContainer, boardContainer, pointsModel}) {
+  constructor({headerContainer, boardContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
@@ -54,7 +61,6 @@ export default class BoardPresenter {
   init() {
     this.#destinations = this.#pointsModel.destinations;
     this.#offers = this.#pointsModel.offers;
-    this.#filters = generateFilter([...this.#pointsModel.points]);
     this.#renderBoard();
   }
 
@@ -160,7 +166,11 @@ export default class BoardPresenter {
   }
 
   #renderFilter() {
-    this.#filterComponent = new FilterView({filters: this.#filters});
+    this.#filterComponent = new FilterView({
+      filters: this.#filters,
+      currentFilterType: 'everything',
+      onFilterTypeChange: () => {}
+    });
     render(this.#filterComponent, this.#headerContainer);
     render(new NewEventButtonView({onClick: this.#handleNewEventClick}), this.#headerContainer, RenderPosition.AFTEREND);
 
