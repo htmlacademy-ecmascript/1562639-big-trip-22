@@ -9,6 +9,7 @@ import {generateSorting} from '../mock/sorting.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 import AddNewPointView from '../view/add-new-point-view.js';
 import FilterPresenter from '../presenter/filter-presenter.js';
+import {filter} from '../utils/utils.js';
 
 export default class BoardPresenter {
   #headerContainer = null;
@@ -34,19 +35,25 @@ export default class BoardPresenter {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return [...this.#pointsModel.points].sort(sortPointByDay);
+        return filteredPoints.sort(sortPointByDay);
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortPointByDuration);
+        return filteredPoints.sort(sortPointByDuration);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortPointByPrice);
+        return filteredPoints.sort(sortPointByPrice);
     }
-    return [...this.#pointsModel.points].sort(sortPointByDay);
+    return filteredPoints.sort(sortPointByDay);
   }
 
   init() {
@@ -89,6 +96,7 @@ export default class BoardPresenter {
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         this.#clearPointList({resetSortType: true});
+        this.#renderSort();
         this.#renderPointsList();
         break;
     }
