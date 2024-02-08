@@ -39,6 +39,8 @@ export default class BoardPresenter {
 
   get points() {
     switch (this.#currentSortType) {
+      case SortType.DAY:
+        return [...this.#pointsModel.points].sort(sortPointByDay);
       case SortType.TIME:
         return [...this.#pointsModel.points].sort(sortPointByDuration);
       case SortType.PRICE:
@@ -81,9 +83,14 @@ export default class BoardPresenter {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда точка удалена или добавлена новая)
+        this.#clearPointList();
+        this.#renderSort();
+        this.#renderPointsList();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this.#clearPointList({resetSortType: true});
+        this.#renderPointsList();
         break;
     }
   };
@@ -93,6 +100,8 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
+
+    this.#currentSortType = sortType;
     // - Очищаем список
     this.#clearPointList();
     // - Рендерим список заново
@@ -128,21 +137,23 @@ export default class BoardPresenter {
   }
 
   #renderNoPoints() {
-    if (this.#pointsModel.points.length === 0) {
-      render(this.#noEventComponent, this.#boardContainer, RenderPosition.AFTEREND);
-    }
+    render(this.#noEventComponent, this.#boardContainer, RenderPosition.AFTEREND);
   }
 
-  #clearPointList() {
+  #clearPointList({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+    remove(this.#sortComponent);
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderPointsList() {
     render(this.#pointListComponent, this.#boardContainer);
 
-    for (let i = 0; i < this.#pointsModel.points.length; i++) {
-      this.#renderPoints(this.#pointsModel.points[i]);
+    for (let i = 0; i < this.points.length; i++) {
+      this.#renderPoints(this.points[i]);
     }
   }
 
@@ -154,9 +165,11 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    this.#renderNoPoints();
     this.#renderSort();
     this.#renderFilter();
     this.#renderPointsList();
+    if (this.#pointsModel.points.length === 0) {
+      this.#renderNoPoints();
+    }
   }
 }
