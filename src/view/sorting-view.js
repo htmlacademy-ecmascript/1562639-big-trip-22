@@ -17,7 +17,7 @@ function createSortingTemplate(sorting, currentSort) {
         ${item.isDisabled ? 'disabled' : ''}
         >
       <label class="trip-sort__btn" for="sort-${item.value}">${item.value}</label>
-    </div>`)}
+    </div>`).join('')}
   </form>) `;
 }
 

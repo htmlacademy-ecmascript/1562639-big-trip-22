@@ -3,7 +3,7 @@ import SortingView from '../view/sorting-view';
 import {RenderPosition, render, remove} from '../framework/render.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import {sortPointByDay, sortPointByDuration, sortPointByPrice} from '../utils/point.js';
 import {generateSorting} from '../mock/sorting.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
@@ -19,14 +19,14 @@ export default class BoardPresenter {
 
   #pointListComponent = new PointsListView();
   #sortComponent = null;
-  #noEventComponent = new NoEventView();
+  #noEventComponent = null;
   #newEventComponent = new AddNewPointView();
 
   #destinations = null;
   #offers = null;
 
   #pointPresenters = new Map();
-
+  #filterType = FilterType.EVERYTHING;
   #currentSortType = SortType.DAY;
   #sortingState = generateSorting(this.#currentSortType);
 
@@ -41,9 +41,9 @@ export default class BoardPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
@@ -92,6 +92,9 @@ export default class BoardPresenter {
         this.#clearPointList();
         this.#renderSort();
         this.#renderPointsList();
+        if (this.points.length === 0) {
+          this.#renderNoPoints();
+        }
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
@@ -144,13 +147,23 @@ export default class BoardPresenter {
   }
 
   #renderNoPoints() {
+    this.#noEventComponent = new NoEventView({
+      filterType: this.#filterType
+    });
+
     render(this.#noEventComponent, this.#boardContainer, RenderPosition.AFTEREND);
   }
 
   #clearPointList({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+
     remove(this.#sortComponent);
+
+    if (this.#noEventComponent) {
+      remove(this.#noEventComponent);
+    }
+
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
@@ -186,7 +199,7 @@ export default class BoardPresenter {
     this.#renderFilter();
     this.#renderNewEventButton();
     this.#renderPointsList();
-    if (this.#pointsModel.points.length === 0) {
+    if (this.points.length === 0) {
       this.#renderNoPoints();
     }
   }
