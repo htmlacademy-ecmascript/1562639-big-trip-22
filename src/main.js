@@ -42,3 +42,4 @@ function handleNewEventButtonClick() {
 render(newEventButtonComponent, siteFilterContainer, RenderPosition.AFTEREND);
 
 boardPresenter.init();
+pointsModel.init();
