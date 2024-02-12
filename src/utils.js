@@ -1,16 +1,6 @@
 import dayjs from 'dayjs';
 import {DateFormat} from './const.js';
 
-
-const getRandomNumber = (number) => {
-  const result = Math.random() * number;
-  return Math.floor(result);
-};
-
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 function humanizeAddPointDate(date) {
   return date ? dayjs(date).format(DateFormat.FULL_DATE) : '';
 }
@@ -43,4 +33,4 @@ function humanizePointDuration (start, end) {
   }
 }
 
-export {getRandomNumber, getRandomArrayElement, humanizePointDate, humanizePointTime, humanizePointDuration, humanizeAddPointDate};
+export {humanizePointDate, humanizePointTime, humanizePointDuration, humanizeAddPointDate};
