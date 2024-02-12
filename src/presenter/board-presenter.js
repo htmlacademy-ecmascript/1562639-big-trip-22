@@ -6,9 +6,8 @@ import PointPresenter from './point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import {sortPointByDay, sortPointByDuration, sortPointByPrice} from '../utils/point.js';
 import {generateSorting} from '../mock/sorting.js';
-import NewEventButtonView from '../view/new-event-button-view.js';
-import AddNewPointView from '../view/add-new-point-view.js';
 import FilterPresenter from '../presenter/filter-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import {filter} from '../utils/utils.js';
 
 export default class BoardPresenter {
@@ -20,21 +19,32 @@ export default class BoardPresenter {
   #pointListComponent = new PointsListView();
   #sortComponent = null;
   #noEventComponent = null;
-  #newEventComponent = new AddNewPointView();
 
   #destinations = null;
   #offers = null;
 
   #pointPresenters = new Map();
+  #newPointPresenter = null;
   #filterType = FilterType.EVERYTHING;
+  #filterComponent = null;
   #currentSortType = SortType.DAY;
   #sortingState = generateSorting(this.#currentSortType);
 
-  constructor({headerContainer, boardContainer, pointsModel, filterModel}) {
+  constructor({headerContainer, boardContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
+    this.#destinations = this.#pointsModel.destinations;
+    this.#offers = this.#pointsModel.offers;
     this.#filterModel = filterModel;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      destinations: this.#destinations,
+      offers: this.#offers,
+      pointListContainer: this.#pointListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -44,6 +54,7 @@ export default class BoardPresenter {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
+
 
     switch (this.#currentSortType) {
       case SortType.DAY:
@@ -57,12 +68,17 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#destinations = this.#pointsModel.destinations;
-    this.#offers = this.#pointsModel.offers;
     this.#renderBoard();
   }
 
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
+
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -90,6 +106,7 @@ export default class BoardPresenter {
       case UpdateType.MINOR:
         // - обновить список (например, когда точка удалена или добавлена новая)
         this.#clearPointList();
+        this.#rerenderFilter();
         this.#renderSort();
         this.#renderPointsList();
         if (this.points.length === 0) {
@@ -155,6 +172,7 @@ export default class BoardPresenter {
   }
 
   #clearPointList({resetSortType = false} = {}) {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
@@ -178,26 +196,23 @@ export default class BoardPresenter {
   }
 
   #renderFilter() {
-    const filterPresenter = new FilterPresenter({
+    this.#filterComponent = new FilterPresenter({
       filterContainer: this.#headerContainer,
       filterModel: this.#filterModel,
       pointsModel: this.#pointsModel,
     });
-    filterPresenter.init();
+    this.#filterComponent.init();
   }
 
-  #renderNewEventButton() {
-    render(new NewEventButtonView({onClick: this.#handleNewEventClick}), this.#headerContainer, RenderPosition.AFTEREND);
+  #rerenderFilter() {
+    console.log(this.#filterComponent.filterComponent);
+    remove(this.#filterComponent.filterComponent);
+    this.#renderFilter();
   }
-
-  #handleNewEventClick = () => {
-    render(this.#newEventComponent, this.#pointListComponent.element, RenderPosition.AFTERBEGIN);
-  };
 
   #renderBoard() {
     this.#renderSort();
     this.#renderFilter();
-    this.#renderNewEventButton();
     this.#renderPointsList();
     if (this.points.length === 0) {
       this.#renderNoPoints();

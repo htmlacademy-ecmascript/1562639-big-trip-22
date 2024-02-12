@@ -8,13 +8,15 @@ const formatOfferTitle = (title) => title.split(' '). join('_');
 
 function createEditPointTemplate(point, destinations, offers) {
   const pointDestination = destinations.find((dest) => dest.id === point.destination);
-  const typeOffers = offers.find((off) => off.type === point.type).offers;
+  const typeOffers = offers.find((off) => off.type === point.type)?.offers ?? [];
+  console.log(typeOffers);
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const {dateFrom, dateTo, basePrice, type} = point;
   const {name, description, pictures} = pointDestination || {};
   const pointId = point.id || 0;
   const addPointTimeFrom = humanizeAddPointDate(dateFrom);
   const addPointTimeTo = humanizeAddPointDate(dateTo);
+
 
   return `
       <li class="trip-events__item">

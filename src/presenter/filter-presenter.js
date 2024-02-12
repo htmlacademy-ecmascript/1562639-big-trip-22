@@ -28,6 +28,10 @@ export default class FilterPresenter {
     }));
   }
 
+  get filterComponent() {
+    return this.#filterComponent;
+  }
+
   init() {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
