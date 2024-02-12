@@ -30,8 +30,10 @@ export default class NewPointPresenter {
       point: {id: nanoid(), type: 'flight', basePrice: 0, offers: []},
       destinations: this.#destinations,
       offers: this.#offers,
+      onCloseEditClick: this.#handleDeleteClick,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
+      isEditMode: false,
     });
 
     render(this.#editPointComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);

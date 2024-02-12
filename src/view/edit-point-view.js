@@ -3,13 +3,13 @@ import { humanizeAddPointDate } from '../utils/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 const formatOfferTitle = (title) => title.split(' '). join('_');
 
-function createEditPointTemplate(point, destinations, offers) {
+function createEditPointTemplate(point, destinations, offers, isEditMode) {
   const pointDestination = destinations.find((dest) => dest.id === point.destination);
   const typeOffers = offers.find((off) => off.type === point.type)?.offers ?? [];
-  console.log(typeOffers);
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const {dateFrom, dateTo, basePrice, type} = point;
   const {name, description, pictures} = pointDestination || {};
@@ -45,7 +45,7 @@ function createEditPointTemplate(point, destinations, offers) {
               <label class="event__label  event__type-output" for="event-destination-${pointId}">
                 ${type}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name || ''}" list="destination-list-${pointId}">
+              <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name || ''}" list="destination-list-${pointId}" required>
               <datalist id="destination-list-${pointId}">
                 ${destinations.map((destination) => `<option value="${destination.name}"></option>`).join('')}
               </datalist>
@@ -53,10 +53,10 @@ function createEditPointTemplate(point, destinations, offers) {
 
             <div class="event__field-group  event__field-group--time">
               <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-              <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${addPointTimeFrom}">
+              <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${addPointTimeFrom}" required>
               &mdash;
               <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-              <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${addPointTimeTo}">
+              <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${addPointTimeTo}" required>
             </div>
 
             <div class="event__field-group  event__field-group--price">
@@ -64,11 +64,11 @@ function createEditPointTemplate(point, destinations, offers) {
                 <span class="visually-hidden">Price</span>
                 &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${basePrice}">
+              <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" min="1" step="1" name="event-price" value="${basePrice}" required>
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${pointId ? 'Delete' : 'Cancel'}</button>
+            <button class="event__reset-btn" type="reset">${isEditMode ? 'Delete' : 'Cancel'}</button>
             ${pointId ? (
     `<button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>
@@ -122,21 +122,23 @@ export default class EditPointView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleDeleteClick = null;
+  #isEditMode = null;
 
-  constructor({point, destinations, offers, onFormSubmit, onCloseEditClick, onDeleteClick}) {
+  constructor({point, destinations, offers, onFormSubmit, onCloseEditClick, onDeleteClick, isEditMode}) {
     super();
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseEditClick = onCloseEditClick;
     this.#handleDeleteClick = onDeleteClick;
+    this.#isEditMode = isEditMode;
 
     this._setState(EditPointView.parsePointToState(point));
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this._state.point, this.#destinations, this.#offers);
+    return createEditPointTemplate(this._state.point, this.#destinations, this.#offers, this.#isEditMode);
   }
 
   removeElement() {

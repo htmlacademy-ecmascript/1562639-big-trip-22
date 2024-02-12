@@ -205,7 +205,6 @@ export default class BoardPresenter {
   }
 
   #rerenderFilter() {
-    console.log(this.#filterComponent.filterComponent);
     remove(this.#filterComponent.filterComponent);
     this.#renderFilter();
   }
