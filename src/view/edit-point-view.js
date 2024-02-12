@@ -3,6 +3,7 @@ import { humanizeAddPointDate } from '../utils/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 const formatOfferTitle = (title) => title.split(' '). join('_');
@@ -45,7 +46,7 @@ function createEditPointTemplate(point, destinations, offers, isEditMode) {
               <label class="event__label  event__type-output" for="event-destination-${pointId}">
                 ${type}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name || ''}" list="destination-list-${pointId}" required>
+              <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name?.length > 0 ? he.encode(name) : he.encode('')}" list="destination-list-${pointId}" required>
               <datalist id="destination-list-${pointId}">
                 ${destinations.map((destination) => `<option value="${destination.name}"></option>`).join('')}
               </datalist>
