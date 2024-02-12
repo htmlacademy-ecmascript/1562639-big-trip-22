@@ -6,7 +6,7 @@ import NewEventButtonView from './view/new-event-button-view';
 import PointsApiService from './points-api-service.js';
 
 const AUTHORIZATION = 'Basic cmd9lg2f8pznef6';
-const END_POINT = 'https://22.objects.htmlacademy.pro/spec/big-trip';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteFilterContainer = siteHeaderElement.querySelector('.trip-main__trip-controls');
@@ -36,7 +36,6 @@ function handleNewEventFormClose() {
 
 function handleNewEventButtonClick() {
   boardPresenter.createPoint();
-  // render(new AddNewPointView, siteTripEventsElement, RenderPosition.AFTERBEGIN);
   newEventButtonComponent.element.disabled = true;
 }
 
